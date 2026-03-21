@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beauty MBA — Платформа для власниць салонів</title>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* Aktiv Grotesk Corp — fallback to system sans until custom font loaded */
+@font-face {
+  font-family: 'Aktiv Grotesk Corp';
+  src: local('Aktiv Grotesk'), local('AktivGrotesk'), local('Helvetica Neue'), local('Arial');
+  font-weight: 400;
+}
+</style>
+<style>
+  :root {
+    --bg: #0e0c0a;
+    --bg2: #161310;
+    --bg3: #1e1a16;
+    --card: #1a1612;
+    --border: rgba(212, 175, 120, 0.15);
+    --gold: #d4af78;
+    --gold2: #e8c98a;
+    --rose: #c97b8a;
+    --rose2: #e8a0ae;
+    --cream: #f0e8d8;
+    --text: #e8e0d0;
+    --muted: #8a7d6a;
+    --green: #7aaa84;
+    --amber: #d4a060;
+    --font-display: 'Prata', 'Times New Roman', serif;
+    --font-body: 'Aktiv Grotesk Corp', 'DM Sans', -apple-system, 'Helvetica Neue', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow-y: auto;
+    z-index: 10;
+  }
+
+  .logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--gold), var(--rose));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .logo-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.5px;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .nav-section {
+    padding: 16px 0 8px;
+  }
+  .nav-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 20px 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active {
+    background: rgba(212, 175, 120, 0.08);
+    color: var(--gold);
+    border-left-color: var(--gold);
+  }
+  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--rose);
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  .user-block {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px; color: white; font-weight: 600;
+  }
+  .user-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .user-plan { font-size: 11px; color: var(--muted); }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .topbar-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--cream);
+    letter-spacing: 0.3px;
+  }
+  .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .notif-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .notif-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .content { padding: 28px 32px; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* ===== GRID ===== */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* ===== HOME PAGE ===== */
+  .welcome-bar {
+    background: linear-gradient(135deg, rgba(212,175,120,0.12), rgba(201,123,138,0.08));
+    border: 1px solid rgba(212,175,120,0.2);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .welcome-greeting {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.3px;
+  }
+  .welcome-greeting em { color: var(--gold); font-style: italic; }
+  .welcome-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .welcome-action {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .welcome-action:hover { background: var(--gold2); }
+
+  /* AI BLOCK */
+  .ai-block {
+    background: linear-gradient(135deg, rgba(201,123,138,0.1), rgba(212,175,120,0.06));
+    border: 1px solid rgba(201,123,138,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .ai-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .ai-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .ai-name { font-size: 13px; font-weight: 500; color: var(--rose2); }
+  .ai-desc { font-size: 11px; color: var(--muted); }
+  .ai-text { font-size: 13.5px; color: var(--text); line-height: 1.6; margin-bottom: 14px; }
+  .ai-recommendations { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .ai-rec-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ai-rec-item:hover { border-color: var(--gold); }
+  .ai-rec-play { color: var(--gold); font-size: 12px; }
+  .ai-rec-title { font-size: 13px; color: var(--text); }
+  .ai-rec-author { font-size: 11px; color: var(--muted); }
+  .ai-btn {
+    background: rgba(201,123,138,0.15);
+    border: 1px solid rgba(201,123,138,0.3);
+    color: var(--rose2);
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .ai-btn:hover { background: rgba(201,123,138,0.25); }
+
+  /* TIMELINE */
+  .timeline-block { margin-bottom: 16px; }
+  .timeline-bar {
+    background: var(--bg3);
+    height: 6px; border-radius: 3px;
+    margin-bottom: 6px; position: relative;
+  }
+  .timeline-fill {
+    background: linear-gradient(90deg, var(--gold), var(--rose));
+    height: 100%; border-radius: 3px;
+    width: 72%;
+  }
+  .timeline-dot {
+    position: absolute; top: 50%; right: 28%;
+    transform: translate(50%, -50%);
+    width: 14px; height: 14px;
+    background: var(--gold); border-radius: 50%;
+    border: 2px solid var(--bg2);
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--bg);
+  }
+  .timeline-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* STATS */
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .stat-val {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .stat-change { font-size: 11px; color: var(--green); margin-top: 4px; }
+
+  /* AWARDS */
+  .award-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 10px;
+  }
+  .award-icon { font-size: 28px; }
+  .award-name { font-size: 11px; color: var(--muted); text-align: center; }
+  .award-pct {
+    font-size: 13px; font-weight: 500;
+  }
+  .award-pct.done { color: var(--green); }
+  .award-pct.partial { color: var(--gold); }
+  .award-pct.none { color: var(--muted); }
+
+  /* ===== COURSES PAGE ===== */
+  .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .module-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .module-card:hover {
+    border-color: rgba(212,175,120,0.4);
+    transform: translateY(-2px);
+  }
+  .module-cover {
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-cover::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4));
+  }
+  .module-body { padding: 14px; }
+  .module-title { font-size: 14px; font-weight: 500; color: var(--cream); margin-bottom: 4px; }
+  .module-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+  .module-meta {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .module-count { font-size: 11px; color: var(--muted); }
+  .module-progress-bar {
+    height: 3px; background: var(--bg3); border-radius: 2px; margin-top: 8px;
+  }
+  .module-progress-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--rose));
+  }
+
+  /* LESSON VIEW */
+  .lesson-header { margin-bottom: 20px; }
+  .lesson-breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 8px; cursor: pointer; }
+  .lesson-breadcrumb:hover { color: var(--gold); }
+  .lesson-title {
+    font-family: var(--font-display);
+    font-size: 26px; font-weight: 400;
+    color: var(--cream);
+  }
+  .lesson-meta { font-size: 12px; color: var(--muted); margin-top: 4px; display: flex; gap: 16px; }
+  .lesson-video {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .lesson-video-bg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--muted);
+  }
+  .play-btn {
+    width: 60px; height: 60px;
+    background: rgba(212,175,120,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--bg);
+    z-index: 1;
+    transition: all 0.2s;
+  }
+  .play-btn:hover { background: var(--gold2); transform: scale(1.05); }
+  .video-duration {
+    position: absolute; bottom: 12px; right: 14px;
+    background: rgba(0,0,0,0.6); color: var(--cream);
+    font-size: 11px; padding: 3px 7px; border-radius: 4px; z-index: 1;
+  }
+
+  .lesson-content { font-size: 14px; color: var(--text); line-height: 1.7; }
+  .lesson-section { margin-bottom: 20px; }
+  .lesson-section h3 {
+    font-size: 13px; font-weight: 500; color: var(--gold);
+    letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .lesson-section ul { list-style: none; }
+  .lesson-section ul li {
+    padding: 5px 0 5px 16px;
+    position: relative; color: var(--text); font-size: 13.5px;
+  }
+  .lesson-section ul li::before {
+    content: '—'; position: absolute; left: 0; color: var(--gold);
+  }
+
+  .mark-done-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 24px;
+  }
+  .mark-done-btn:hover { background: rgba(212,175,120,0.12); }
+  .mark-done-btn.done {
+    background: rgba(122,170,132,0.12);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .lessons-list { display: flex; flex-direction: column; gap: 8px; }
+  .lesson-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lesson-item:hover { border-color: rgba(212,175,120,0.3); }
+  .lesson-num {
+    width: 28px; height: 28px;
+    background: var(--bg3); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--muted);
+    flex-shrink: 0;
+  }
+  .lesson-num.done { background: rgba(122,170,132,0.2); color: var(--green); }
+  .lesson-info { flex: 1; }
+  .lesson-item-title { font-size: 13.5px; color: var(--text); }
+  .lesson-item-dur { font-size: 11px; color: var(--muted); }
+  .lesson-chevron { color: var(--muted); font-size: 12px; }
+
+  /* ===== CALENDAR ===== */
+  .calendar-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .cal-nav { display: flex; align-items: center; gap: 12px; }
+  .cal-nav button {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); width: 32px; height: 32px;
+    border-radius: 8px; cursor: pointer; font-size: 14px;
+    transition: all 0.2s;
+  }
+  .cal-nav button:hover { border-color: var(--gold); color: var(--gold); }
+  .cal-month {
+    font-family: var(--font-display);
+    font-size: 20px; color: var(--cream);
+  }
+  .cal-view-btns { display: flex; gap: 6px; }
+  .cal-view-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 14px;
+    border-radius: 8px; cursor: pointer; font-size: 12px;
+    transition: all 0.2s;
+  }
+  .cal-view-btn.active { background: rgba(212,175,120,0.1); border-color: var(--gold); color: var(--gold); }
+
+  .calendar-grid {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .cal-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-weekday {
+    padding: 10px;
+    text-align: center; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cal-days {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+  }
+  .cal-day {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    min-height: 80px;
+    padding: 8px;
+  }
+  .cal-day:nth-child(7n) { border-right: none; }
+  .cal-day-num {
+    font-size: 12px; color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .cal-day.today .cal-day-num {
+    width: 22px; height: 22px;
+    background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--bg); font-weight: 500;
+  }
+  .cal-day.other-month { opacity: 0.4; }
+  .cal-event {
+    font-size: 10px; padding: 2px 6px;
+    border-radius: 4px; margin-bottom: 2px;
+    white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; cursor: pointer;
+  }
+  .cal-event.webinar { background: rgba(212,175,120,0.2); color: var(--gold); }
+  .cal-event.qa { background: rgba(201,123,138,0.2); color: var(--rose2); }
+  .cal-event.workshop { background: rgba(122,170,132,0.2); color: var(--green); }
+
+  .upcoming-events { margin-top: 20px; }
+  .event-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .event-card:hover { border-color: rgba(212,175,120,0.3); }
+  .event-date-box {
+    text-align: center; min-width: 44px;
+    background: var(--bg3); border-radius: 8px;
+    padding: 6px 8px;
+  }
+  .event-day { font-size: 20px; font-weight: 500; color: var(--gold); line-height: 1; }
+  .event-month { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .event-title { font-size: 14px; font-weight: 500; color: var(--cream); }
+  .event-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .event-tag {
+    margin-left: auto; font-size: 10px; padding: 3px 8px;
+    border-radius: 12px;
+  }
+  .event-tag.webinar { background: rgba(212,175,120,0.15); color: var(--gold); }
+  .event-tag.qa { background: rgba(201,123,138,0.15); color: var(--rose2); }
+  .event-tag.workshop { background: rgba(122,170,132,0.15); color: var(--green); }
+
+  /* ===== CABINET (METRICS) ===== */
+  .metrics-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .metrics-period {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .period-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 14px;
+    border-radius: 8px; cursor: pointer; font-size: 12px;
+    transition: all 0.2s; font-family: var(--font-body);
+  }
+  .period-btn.active { background: rgba(212,175,120,0.1); border-color: var(--gold); color: var(--gold); }
+
+  .metrics-table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .metrics-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .metrics-table th {
+    padding: 10px 14px;
+    font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .metrics-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(212,175,120,0.06);
+  }
+  .metrics-table tr:last-child td { border-bottom: none; }
+  .metrics-table td.metric-name { color: var(--muted); font-size: 12.5px; }
+  .metrics-table td.plan { color: var(--muted); }
+  .metrics-table td.fact { color: var(--cream); font-weight: 500; }
+  .metrics-table td.pct-good { color: var(--green); }
+  .metrics-table td.pct-bad { color: var(--rose); }
+  .metrics-table td.pct-mid { color: var(--amber); }
+  .metrics-table .section-header td {
+    background: var(--bg3);
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gold); padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  input.metric-input {
+    background: transparent;
+    border: none; outline: none;
+    color: var(--cream);
+    font-family: var(--font-body);
+    font-size: 13px;
+    width: 80px;
+    border-bottom: 1px dashed rgba(212,175,120,0.3);
+    padding: 2px 0;
+  }
+  input.metric-input:focus {
+    border-bottom-color: var(--gold);
+    color: var(--gold);
+  }
+  .section-row { cursor: pointer; }
+  .section-row:hover td { background: rgba(255,255,255,0.015); }
+
+  /* CHARTS */
+  .mini-chart {
+    display: flex; align-items: flex-end;
+    gap: 3px; height: 40px;
+  }
+  .mini-bar {
+    flex: 1; border-radius: 2px 2px 0 0;
+    background: var(--bg3);
+    transition: height 0.3s;
+  }
+  .mini-bar.gold { background: linear-gradient(180deg, var(--gold), rgba(212,175,120,0.4)); }
+  .mini-bar.rose { background: linear-gradient(180deg, var(--rose), rgba(201,123,138,0.4)); }
+
+  /* ===== AI COACH PAGE ===== */
+  .chat-layout {
+    display: flex; gap: 0;
+    height: calc(100vh - 65px);
+  }
+  .chat-area {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 24px 28px;
+    overflow: hidden;
+  }
+  .chat-coach-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .coach-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .coach-name {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 400; color: var(--cream);
+  }
+  .coach-spec { font-size: 12px; color: var(--muted); }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px;
+    padding-right: 8px;
+    margin-bottom: 16px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .msg {
+    display: flex; gap: 10px; max-width: 85%;
+  }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0; margin-top: 2px;
+  }
+  .msg.ai .msg-avatar { background: linear-gradient(135deg, var(--rose), var(--gold)); }
+  .msg.user .msg-avatar { background: linear-gradient(135deg, var(--gold), var(--rose)); }
+  .msg-bubble {
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-size: 13.5px; line-height: 1.6;
+  }
+  .msg.ai .msg-bubble {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-top-left-radius: 4px;
+  }
+  .msg.user .msg-bubble {
+    background: rgba(212,175,120,0.12);
+    border: 1px solid rgba(212,175,120,0.2);
+    color: var(--cream);
+    border-top-right-radius: 4px;
+  }
+
+  .chat-suggestions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .suggestion-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--muted); font-size: 12px;
+    padding: 7px 13px; border-radius: 20px;
+    cursor: pointer; font-family: var(--font-body);
+    transition: all 0.2s;
+  }
+  .suggestion-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .chat-input-area {
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    resize: none; outline: none;
+    transition: border-color 0.2s;
+    min-height: 42px;
+  }
+  .chat-input:focus { border-color: rgba(212,175,120,0.4); }
+  .chat-input::placeholder { color: var(--muted); }
+  .send-btn {
+    background: var(--gold);
+    border: none; color: var(--bg);
+    width: 42px; height: 42px;
+    border-radius: 10px; cursor: pointer;
+    font-size: 16px; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .send-btn:hover { background: var(--gold2); }
+
+  .chat-sidebar {
+    width: 220px; min-width: 220px;
+    border-left: 1px solid var(--border);
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+  .coach-list-title {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .coach-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 4px;
+  }
+  .coach-item:hover { background: var(--bg3); }
+  .coach-item.active { background: rgba(212,175,120,0.08); }
+  .coach-item-icon { font-size: 18px; }
+  .coach-item-name { font-size: 12.5px; color: var(--text); }
+  .coach-item-spec { font-size: 10.5px; color: var(--muted); }
+
+  /* ===== TYPING ANIMATION ===== */
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .typing-dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--muted); border-radius: 50%;
+    margin: 0 2px;
+    animation: blink 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .pulse { animation: pulse 2s infinite; }
+
+  /* SCROLLBAR */
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .section-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 400; color: var(--cream);
+  }
+  .see-all { font-size: 12px; color: var(--muted); cursor: pointer; }
+  .see-all:hover { color: var(--gold); }
+
+  .tag {
+    font-size: 10px; padding: 3px 8px;
+    border-radius: 12px; background: rgba(212,175,120,0.12);
+    color: var(--gold); letter-spacing: 0.5px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* TOOLTIP for done state */
+  .done-indicator {
+    width: 18px; height: 18px;
+    background: rgba(122,170,132,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--green);
+  }
+
+  .loading-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--rose), var(--gold));
+    background-size: 200%;
+    animation: loading 1.5s linear infinite;
+    z-index: 100;
+    display: none;
+  }
+  @keyframes loading { 0%{background-position:0%} 100%{background-position:200%} }
+  .loading-bar.show { display: block; }
+
+  /* ===== CABINET NEW ===== */
+  .cab-pct { font-size:12px;font-weight:500;padding:2px 8px;border-radius:10px; }
+  .pct-good { color:var(--green);background:rgba(122,170,132,0.1); }
+  .pct-mid  { color:var(--amber);background:rgba(212,160,96,0.1); }
+  .pct-bad  { color:var(--rose);background:rgba(201,123,138,0.1); }
+  .cab-view-btn { background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;transition:all 0.2s;font-family:var(--font-body); }
+  .cab-view-btn.active { background:rgba(212,175,120,0.1);border-color:var(--gold);color:var(--gold); }
+
+</style>
+</head>
+<body>
+
+<div class="loading-bar" id="loadingBar"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">💎</div>
+    <div class="logo-name">Beauty MBA</div>
+    <div class="logo-sub">Платформа</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Головне</div>
+    <div class="nav-item active" onclick="showPage('home')">
+      <span class="icon">🏠</span> Головна
+    </div>
+    <div class="nav-item" onclick="showPage('courses')">
+      <span class="icon">📚</span> Навчання
+    </div>
+    <div class="nav-item" onclick="showPage('calendar')">
+      <span class="icon">📅</span> Календар
+      <span class="nav-badge">3</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Мій кабінет</div>
+    <div class="nav-item" onclick="showPage('cabinet')">
+      <span class="icon">📊</span> Аналітика
+    </div>
+    <div class="nav-item" onclick="showPage('ai')">
+      <span class="icon">✨</span> AI-коуч
+    </div>
+  </div>
+
+  <div class="user-block">
+    <div class="user-avatar">О</div>
+    <div>
+      <div class="user-name">Оксана Мельник</div>
+      <div class="user-plan">Beauty MBA Pro</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Головна</div>
+        <div class="topbar-sub">Твій особистий кабінет учасниці Beauty MBA</div>
+      </div>
+      <button class="notif-btn" onclick="showPage('calendar')">🔔 Увімкнути сповіщення</button>
+    </div>
+    <div class="content">
+      <div class="welcome-bar">
+        <div>
+          <div class="welcome-greeting">Вітаємо, <em>Оксано!</em></div>
+          <div class="welcome-sub">Ти на правильному шляху. Сьогодні — 3-й тиждень курсу.</div>
+        </div>
+        <button class="welcome-action" onclick="showPage('courses')">▶ Продовжити навчання</button>
+      </div>
+
+      <!-- AI BLOCK -->
+      <div class="ai-block">
+        <div class="ai-header">
+          <div class="ai-icon">✨</div>
+          <div>
+            <div class="ai-name">Beauty Стратег</div>
+            <div class="ai-desc">Персональні рекомендації</div>
+          </div>
+        </div>
+        <div class="ai-text">
+          Оксано, на основі твоїх метрик: середній чек виріс на 12%, але відсоток повернення клієнтів — лише 58%. Рекомендую зосередитись на модулі "Клієнтський сервіс та лояльність" — це допоможе вийти на 70%+.
+        </div>
+        <div class="ai-recommendations">
+          <div class="ai-rec-item" onclick="openLesson()">
+            <span class="ai-rec-play">▶</span>
+            <div>
+              <div class="ai-rec-title">Систематизація клієнтської бази</div>
+              <div class="ai-rec-author">Модуль 3 · 24 хв</div>
+            </div>
+          </div>
+          <div class="ai-rec-item" onclick="openLesson()">
+            <span class="ai-rec-play">▶</span>
+            <div>
+              <div class="ai-rec-title">Як підвищити середній чек без стресу</div>
+              <div class="ai-rec-author">Модуль 4 · 18 хв</div>
+            </div>
+          </div>
+        </div>
+        <button class="ai-btn" onclick="showPage('ai')">✨ Обговорити зі стратегом →</button>
+      </div>
+
+      <!-- TIMELINE + AWARDS -->
+      <div class="grid-2" style="margin-bottom: 20px;">
+        <div class="card">
+          <div class="card-title">⏱ Таймлайн навчання</div>
+          <div class="timeline-block">
+            <div class="timeline-bar">
+              <div class="timeline-fill"></div>
+              <div class="timeline-dot">●</div>
+            </div>
+            <div class="timeline-labels">
+              <span>1 лют</span>
+              <span style="color:var(--gold)">Ти тут</span>
+              <span>31 кві</span>
+            </div>
+          </div>
+          <div style="margin-top: 12px; font-size: 12px; color: var(--muted);">
+            Залишилось <span style="color: var(--gold); font-weight: 500;">38 днів</span> до завершення потоку
+          </div>
+          <div style="margin-top: 10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:12px;color:var(--muted)">Пройдено уроків</span>
+              <span style="font-size:12px;color:var(--gold)">14 / 32</span>
+            </div>
+            <div class="module-progress-bar"><div class="module-progress-fill" style="width:44%"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🏆 Нагороди</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr);">
+            <div class="award-item">
+              <div class="award-icon">🥇</div>
+              <div class="award-name">Хороша учениця</div>
+              <div class="award-pct done">✓ 100%</div>
+            </div>
+            <div class="award-item">
+              <div class="award-icon">💰</div>
+              <div class="award-name">Бізнес-аналітик</div>
+              <div class="award-pct partial">60%</div>
+            </div>
+            <div class="award-item">
+              <div class="award-icon">👑</div>
+              <div class="award-name">Лідер потоку</div>
+              <div class="award-pct none">0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="section-header-row">
+        <div class="section-title">Показники твого салону</div>
+        <span class="see-all" onclick="showPage('cabinet')">Вся аналітика →</span>
+      </div>
+      <div class="grid-4" style="margin-bottom: 8px;">
+        <div class="stat-card">
+          <div class="stat-val">₴142K</div>
+          <div class="stat-label">Виручка, березень</div>
+          <div class="stat-change">↑ +18% до плану</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">₴870</div>
+          <div class="stat-label">Середній чек</div>
+          <div class="stat-change">↑ +12% vs лютий</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">164</div>
+          <div class="stat-label">Візитів за місяць</div>
+          <div class="stat-change" style="color:var(--rose)">↓ -4 vs план</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">58%</div>
+          <div class="stat-label">Повернення клієнтів</div>
+          <div class="stat-change" style="color:var(--amber)">→ Ціль: 70%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSES PAGE -->
+  <div class="page" id="page-courses">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Навчання</div>
+        <div class="topbar-sub">Beauty MBA — 10 факультетів · 100+ лекцій · 3 місяці</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:12px;color:var(--muted)">Прогрес:</div>
+        <div style="width:120px;height:4px;background:var(--bg3);border-radius:2px;">
+          <div id="total-prog" style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--rose));width:0%"></div>
+        </div>
+        <div style="font-size:12px;color:var(--gold)" id="total-prog-txt">0 / 0</div>
+      </div>
+    </div>
+    <div class="content">
+      <!-- FACULTIES GRID -->
+      <div id="faculties-view">
+        <div id="faculty-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;"></div>
+      </div>
+
+      <!-- FACULTY DETAIL -->
+      <div id="faculty-view" style="display:none;">
+        <div class="lesson-breadcrumb" onclick="backToFaculties()">← Всі факультети</div>
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;">
+          <div id="fac-icon" style="font-size:40px;line-height:1;margin-top:4px;"></div>
+          <div>
+            <div class="section-title" id="fac-title" style="margin-bottom:6px;"></div>
+            <div id="fac-result" style="font-size:13px;color:var(--muted);line-height:1.6;max-width:620px;"></div>
+          </div>
+        </div>
+        <div id="departments-area"></div>
+      </div>
+
+      <!-- LESSON VIEW -->
+      <div id="lesson-view" style="display:none;">
+        <div class="lesson-breadcrumb" id="lesson-back" onclick="backToFacultyFromLesson()">← Назад до факультету</div>
+        <div class="lesson-header">
+          <div class="lesson-title" id="lsn-title"></div>
+          <div class="lesson-meta" id="lsn-meta"></div>
+        </div>
+
+        <!-- YouTube Player -->
+        <div style="position:relative;width:100%;padding-bottom:56.25%;background:var(--bg3);border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border);" id="yt-wrap">
+          <div id="yt-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+            <div style="width:64px;height:64px;background:rgba(212,175,120,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid rgba(212,175,120,0.3);">▶</div>
+            <div style="font-size:14px;color:var(--muted);">Відео-урок Beauty MBA</div>
+            <div style="font-size:12px;color:var(--muted);opacity:0.6;">Вставте YouTube-посилання нижче</div>
+            <div style="display:flex;gap:8px;margin-top:4px;">
+              <input id="yt-input" placeholder="https://youtu.be/..." style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;width:300px;outline:none;" onkeydown="if(event.key==='Enter')loadYT()">
+              <button onclick="loadYT()" style="background:var(--gold);border:none;color:var(--bg);padding:9px 18px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:all 0.2s;">Завантажити</button>
+            </div>
+          </div>
+          <iframe id="yt-iframe" style="position:absolute;inset:0;width:100%;height:100%;display:none;" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div id="lsn-content" style="font-size:14px;color:var(--text);line-height:1.7;"></div>
+
+        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+          <button id="mark-done-lsn" class="mark-done-btn" onclick="markLessonDone()">○ Відмітити як переглянуте</button>
+          <button onclick="navLesson(-1)" style="background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;">‹ Попередній</button>
+          <button onclick="navLesson(1)" style="background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;">Наступний ›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CALENDAR PAGE -->
+  <div class="page" id="page-calendar">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Календар подій</div>
+        <div class="topbar-sub">Натисни на подію для отримання Zoom-посилання</div>
+      </div>
+      <div class="cal-view-btns">
+        <div class="cal-view-btn" onclick="setCalView('calendar', this)">Календар</div>
+        <div class="cal-view-btn active" onclick="setCalView('cards', this)">Карточки</div>
+      </div>
+    </div>
+    <div class="content">
+      <div id="cal-calendar-view" style="display:none;">
+        <div class="calendar-header">
+          <div class="cal-nav">
+            <button onclick="changeMonth(-1)">‹</button>
+            <div class="cal-month" id="cal-month-label">Березень 2026</div>
+            <button onclick="changeMonth(1)">›</button>
+          </div>
+          <button class="notif-btn" style="font-size:12px;" onclick="goToday()">Сьогодні</button>
+        </div>
+        <div class="calendar-grid">
+          <div class="cal-weekdays">
+            <div class="cal-weekday">Пн</div><div class="cal-weekday">Вт</div>
+            <div class="cal-weekday">Ср</div><div class="cal-weekday">Чт</div>
+            <div class="cal-weekday">Пт</div><div class="cal-weekday">Сб</div>
+            <div class="cal-weekday">Нд</div>
+          </div>
+          <div class="cal-days" id="cal-days"></div>
+        </div>
+      </div>
+      <div id="cal-cards-view">
+        <div class="section-header-row">
+          <div class="section-title">Найближчі події</div>
+          <span class="tag">5 подій</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="event-card" onclick="openEvent('Вебінар: Ціноутворення у салоні краси')">
+            <div class="event-date-box"><div class="event-day">22</div><div class="event-month">Бер</div></div>
+            <div><div class="event-title">Вебінар: Ціноутворення у салоні краси</div><div class="event-time">🕐 18:00 – 19:30 · Zoom</div></div>
+            <span class="event-tag webinar">Вебінар</span>
+          </div>
+          <div class="event-card" onclick="openEvent('Q&A з Лерою Бондаренко')">
+            <div class="event-date-box"><div class="event-day">26</div><div class="event-month">Бер</div></div>
+            <div><div class="event-title">Q&A з Лерою Бондаренко</div><div class="event-time">🕐 19:00 – 20:00 · Zoom</div></div>
+            <span class="event-tag qa">Q&A</span>
+          </div>
+          <div class="event-card" onclick="openEvent('Воркшоп: Instagram для салону')">
+            <div class="event-date-box"><div class="event-day">2</div><div class="event-month">Кві</div></div>
+            <div><div class="event-title">Воркшоп: Instagram для салону</div><div class="event-time">🕐 16:00 – 18:00 · Zoom</div></div>
+            <span class="event-tag workshop">Воркшоп</span>
+          </div>
+          <div class="event-card" onclick="openEvent('Мастермайнд: Розбір кейсів')">
+            <div class="event-date-box"><div class="event-day">9</div><div class="event-month">Кві</div></div>
+            <div><div class="event-title">Мастермайнд: Розбір кейсів учасниць</div><div class="event-time">🕐 18:00 – 20:00 · Zoom</div></div>
+            <span class="event-tag qa">Мастермайнд</span>
+          </div>
+          <div class="event-card" onclick="openEvent('Воркшоп: Управління командою')">
+            <div class="event-date-box"><div class="event-day">16</div><div class="event-month">Кві</div></div>
+            <div><div class="event-title">Воркшоп: Управління командою</div><div class="event-time">🕐 17:00 – 19:00 · Zoom</div></div>
+            <span class="event-tag workshop">Воркшоп</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CABINET PAGE -->
+  <div class="page" id="page-cabinet">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Аналітика салону</div>
+        <div class="topbar-sub">Вводь дані вручну або імпортуй з Google Sheets</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="metrics-period">
+          <button class="period-btn" onclick="setPeriod('week',this)">Тиждень</button>
+          <button class="period-btn active" onclick="setPeriod('month',this)">Місяць</button>
+        </div>
+        <button class="cab-view-btn active" onclick="switchCabView('dashboard',this)">Дашборд</button>
+        <button class="cab-view-btn" onclick="switchCabView('import',this)">Імпорт</button>
+      </div>
+    </div>
+    <div class="content" id="cabinet-main"></div>
+  </div>
+
+  <!-- AI PAGE -->
+  <div class="page" id="page-ai">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">AI-коуч</div>
+        <div class="topbar-sub">Персональний асистент на основі уроків Лери Бондаренко</div>
+      </div>
+    </div>
+    <div class="chat-layout">
+      <div class="chat-area">
+        <div class="chat-coach-header">
+          <div class="coach-icon">💎</div>
+          <div>
+            <div class="coach-name">Beauty Стратег</div>
+            <div class="coach-spec">Стратегія · Фінанси · Зростання салону</div>
+          </div>
+          <div style="margin-left:auto; font-size:11px; color:var(--green)">● Онлайн</div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg ai fade-in">
+            <div class="msg-avatar">💎</div>
+            <div class="msg-bubble">
+              Привіт, Оксано! 👋<br><br>
+              Я Beauty Стратег — AI-коуч, навчений на матеріалах курсу Beauty MBA та знаю твої показники салону.<br><br>
+              Бачу, що твій середній чек виріс на 12% — це чудово! Але відсоток повернення клієнток 58% — є куди рости. Хочеш розберемо, як вийти на 70%?
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-suggestions">
+          <button class="suggestion-btn" onclick="sendSuggestion('Як підвищити повернення клієнток?')">Як підвищити повернення клієнток?</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('Розбери мої фінансові показники')">Розбери мої фінансові показники</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('Як підняти середній чек без стресу?')">Як підняти середній чек?</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('Що порадиш з Instagram для салону?')">Instagram для салону</button>
+        </div>
+
+        <div class="chat-input-area">
+          <textarea class="chat-input" id="chat-input" placeholder="Запитай Beauty Стратега..." rows="1"
+            onkeydown="handleChatKey(event)"></textarea>
+          <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+      </div>
+
+      <div class="chat-sidebar">
+        <div class="coach-list-title">AI-коучі</div>
+        <div class="coach-item active">
+          <div class="coach-item-icon">💎</div>
+          <div>
+            <div class="coach-item-name">Beauty Стратег</div>
+            <div class="coach-item-spec">Стратегія, ріст</div>
+          </div>
+        </div>
+        <div class="coach-item" onclick="switchCoach('Фінансовий аналітик', '💰', 'Фінанси, ціноутворення')">
+          <div class="coach-item-icon">💰</div>
+          <div>
+            <div class="coach-item-name">Фінансовий аналітик</div>
+            <div class="coach-item-spec">Фінанси, ціни</div>
+          </div>
+        </div>
+        <div class="coach-item" onclick="switchCoach('Instagram-ментор', '📱', 'Контент, сторіс, просування')">
+          <div class="coach-item-icon">📱</div>
+          <div>
+            <div class="coach-item-name">Instagram-ментор</div>
+            <div class="coach-item-spec">Контент, сторіс</div>
+          </div>
+        </div>
+        <div class="coach-item" onclick="switchCoach('HR-консультант', '👥', 'Команда, наймання, мотивація')">
+          <div class="coach-item-icon">👥</div>
+          <div>
+            <div class="coach-item-name">HR-консультант</div>
+            <div class="coach-item-spec">Команда, наймання</div>
+          </div>
+        </div>
+        <div class="coach-item" onclick="switchCoach('Клієнтський сервіс', '🌸', 'Лояльність, LTV, повернення')">
+          <div class="coach-item-icon">🌸</div>
+          <div>
+            <div class="coach-item-name">Клієнтський сервіс</div>
+            <div class="coach-item-spec">Лояльність, LTV</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    if(item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+      item.classList.add('active');
+    }
+  });
+  
+  if(id === 'courses') renderFacultyGrid();
+  if(id === 'cabinet') { renderCabinet(); }
+  if(id === 'calendar') renderCalendar();
+}
+
+// ===== COURSES DATA =====
+const FACULTIES = [
+  {
+    id: 1, icon: '🧠', num: '01',
+    title: 'Факультет Психології',
+    color: 'linear-gradient(135deg,#1a1228,#2a1840)',
+    result: 'Ти побачиш, як внутрішні установки та страхи створюють безлад у бізнесі. Розпізнаєш власні патерни і зрозумієш, як вони впливають на команду, рішення та прибуток.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Вступна. Мислення і установки — фундамент системного бізнесу',
+          'Вплив мислення на систему в бізнесі',
+          'Страх втратити команду',
+          'Потреба подобатись та її наслідки',
+          'Тривожність і контроль',
+          'Нова внутрішня опора власниці',
+          'Вигоряння та право на свої правила',
+        ]
+      }
+    ]
+  },
+  {
+    id: 2, icon: '👑', num: '02',
+    title: 'Факультет Ролей Власниці',
+    color: 'linear-gradient(135deg,#1a1010,#2d1a0a)',
+    result: 'Ти перестанеш плутати власницьку роль із ролями адміністратора чи менеджера. Піднімешся на рівень огляду зверху, де видно процеси та точки росту.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Яка твоя роль у салоні',
+          'Функції, за які ти відповідаєш',
+          'Власниця чи майстриня?',
+          'Різниця між власницею, керівником і менеджером',
+          'Як має виглядати твій тиждень',
+        ]
+      }
+    ]
+  },
+  {
+    id: 3, icon: '💎', num: '03',
+    title: 'Факультет Ідентичності Бренду',
+    color: 'linear-gradient(135deg,#0e1228,#1a2040)',
+    result: 'Ти сформуєш цілісну ідентичність свого бренду: місію, цінності, архетип, ДНК. Маркетинг стане послідовною системою зі смислом, а не набором випадкових публікацій.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'З чого починається бренд',
+          'Аналіз конкурентів',
+          'Опитування клієнтів',
+          'Місія салону',
+          'Цінності бізнесу',
+          'Архетип бренду',
+          'Унікальність і ДНК бренду',
+          'Tone of voice',
+          'Концепція салону',
+          'Біблія бренду для команди',
+        ]
+      }
+    ]
+  },
+  {
+    id: 4, icon: '💰', num: '04',
+    title: 'Факультет Фінансів',
+    color: 'linear-gradient(135deg,#0a1410,#0f2018)',
+    result: 'Ти перестанеш вести бізнес інтуїтивно. З\'явиться фінмодель, фінплан і система контролю каси, зарплат, витрат та ризиків.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Потенціал твого салону',
+          'P&L та Cash Flow',
+          'Фінансове планування',
+          'Формати зарплат і фінансові межі',
+          'Собівартість і ціноутворення',
+          'Фінансові ризики і витоки',
+          'Резерви і фінансова подушка',
+          'Каса, CRM і контроль',
+        ]
+      }
+    ]
+  },
+  {
+    id: 5, icon: '👥', num: '05',
+    title: 'Факультет Команди',
+    color: 'linear-gradient(135deg,#12100a,#201508)',
+    result: 'Ти побудуєш повний цикл роботи з людьми: пошук, відбір, адаптація, розвиток, мотивація та зворотний зв\'язок. Команда працюватиме системно, а не на ентузіазмі.',
+    departments: [
+      {
+        name: 'Кафедра Найму',
+        lessons: [
+          'Профіль посади та вимоги до кандидата',
+          'Де і як шукати майстрів',
+          'Етапи відбору та тестове завдання',
+          'Адаптація нового майстра',
+        ]
+      },
+      {
+        name: 'Кафедра Ролей та Обов\'язків',
+        lessons: [
+          'Посадові інструкції майстрів, адміністраторів та керуючої',
+        ]
+      },
+      {
+        name: 'Кафедра KPI та Мотивації',
+        lessons: [
+          'Формування KPI керуючій, адміністраторам та команді',
+          'Контроль за виконанням KPI',
+          'Мотивація',
+        ]
+      },
+      {
+        name: 'Кафедра Внутрішньої Екосистеми',
+        lessons: [
+          'Командні зустрічі',
+          'Анонімні опитування',
+          'Рівень задоволеності в команді',
+          'Корпоративна культура',
+        ]
+      },
+      {
+        name: 'Кафедра Юридичної Безпеки Бізнесу',
+        lessons: [
+          'Партнерство в бізнесі',
+          'Помилки',
+          'Салон краси як суб\'єкт господарювання',
+          'Договірні відносини',
+          'Правовідносини з командою',
+          'Захист прав споживачів. Подарункові сертифікати',
+          'Інтелектуальна власність',
+          'Реклама послуг',
+          'Найпопулярніші судові спори',
+        ]
+      }
+    ]
+  },
+  {
+    id: 6, icon: '📈', num: '06',
+    title: 'Факультет Продажів',
+    color: 'linear-gradient(135deg,#0e1810,#162408)',
+    result: 'Ти вибудуєш зрозумілу структуру продажів у салоні: ролі, етапи, апселінг, мову сервісу, навчання та контроль. Продажі стануть природною частиною процесу.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Хто продає в салоні',
+          'Етапи продажу',
+          'Продаж косметики',
+          'Апсейл / крос-сейл / даунсейл',
+        ]
+      }
+    ]
+  },
+  {
+    id: 7, icon: '🌸', num: '07',
+    title: 'Факультет Клієнтського Досвіду',
+    color: 'linear-gradient(135deg,#1a0e14,#2a1020)',
+    result: 'Ти створиш повну карту шляху клієнта. Сервіс стане вимірюваною системою з чіткими стандартами, зворотним зв\'язком і впровадженням емоційних моментів.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Карта подорожі клієнта',
+          'Wow-сервіс у б\'юті',
+          'Команда і сервіс',
+          'Контроль сервісу',
+          'Зворотний зв\'язок і скарги',
+        ]
+      }
+    ]
+  },
+  {
+    id: 8, icon: '📱', num: '08',
+    title: 'Факультет Маркетингу',
+    color: 'linear-gradient(135deg,#0e0a1a,#1a1030)',
+    result: 'Маркетинг стане прогнозованою системою залучення та утримання клієнтів. Ти працюватимеш із реальними прикладами та методологією.',
+    departments: [
+      {
+        name: 'Вступна лекція',
+        lessons: [
+          'Безлад чи система: навіщо власниці розуміти, як працює маркетинг',
+        ]
+      },
+      {
+        name: 'Кафедра SMM',
+        lessons: [
+          'Як знайти свого SMM-фахівця',
+          'Як платити і мотивувати, щоб не вигоріти першій',
+          'Контроль без мікроменеджменту',
+          'SMM стратегія: потрібна чи ні, і хто її робить',
+          'Власник у контенті',
+          'Який власник — найкращий клієнт для SMM-ника',
+        ]
+      },
+      {
+        name: 'Кафедра Особистого Бренду',
+        lessons: [
+          'Твоє місце в комунікації бренду',
+          'Експертність',
+          'Контент: що викладати, крім обличчя',
+          'Архетип і роль у бренді',
+        ]
+      },
+      {
+        name: 'Кафедра Таргетованої Реклами',
+        lessons: [
+          'Таргет не твоя справа — але твоя відповідальність',
+          'Як знайти таргетолога і не пошкодувати',
+          'Як перевірити, що таргет працює',
+          'Креативи, які продають',
+        ]
+      },
+      {
+        name: 'Кафедра Контенту і Instagram',
+        lessons: [
+          'Візуал і впізнаваність',
+          'Сторіс і Reels',
+          'Контент-план і рубрики',
+          'Аналіз конкурентів',
+        ]
+      },
+      {
+        name: 'Кафедра Джерел Клієнтів',
+        lessons: [
+          'Звідки приходять клієнти — і що реально працює',
+          'Куди варто вкладати, а що час відключити',
+          '10 найпотужніших інструментів залучення клієнтів',
+        ]
+      },
+      {
+        name: 'Кафедра Бази і Повернень',
+        lessons: [
+          'CRM: що зберігати про клієнта',
+          'Повторні візити',
+          'Система лояльності',
+          'Реактивація клієнтів',
+          'Відгуки і NPS',
+        ]
+      },
+      {
+        name: 'Кафедра ROMI і Маркетинг-аналітики',
+        lessons: [
+          'ROMI: що це і як рахувати',
+          'LTV: скільки приносить один клієнт',
+          'Які канали працюють: маркетинг-аналітика для власниці',
+          'Як приймати рішення на основі даних',
+        ]
+      }
+    ]
+  },
+  {
+    id: 9, icon: '⚙️', num: '09',
+    title: 'Факультет Систем і Делегування',
+    color: 'linear-gradient(135deg,#0a1018,#101828)',
+    result: 'Ти вибудуєш бізнес, який працює без твоєї щоденної присутності. Процеси перестануть існувати у твоїй голові — вони стануть структурою.',
+    departments: [
+      {
+        name: 'Кафедра Керуючої',
+        lessons: [
+          'Зона відповідальності керуючої',
+          'Що і як делегувати',
+          'KPI керуючої',
+          'Щотижневі планерки з керуючою',
+          'Звітність і аналітика',
+        ]
+      },
+      {
+        name: 'Кафедра Адміністрації',
+        lessons: [
+          'KPI адміністратора',
+          'Рутина адміністратора',
+          'CRM і контроль клієнтів',
+          'Скрипти продажу і переписок',
+          'Контроль каси',
+          'Робочі інструменти власниці',
+        ]
+      },
+      {
+        name: 'Кафедра Технологій',
+        lessons: [
+          'Можливості CRM для власниці',
+          'ІР телефонія',
+          'NOTION для команди',
+          'Структура телеграм чатів для ефективної комунікації з командою',
+        ]
+      }
+    ]
+  },
+  {
+    id: 10, icon: '🌍', num: '10',
+    title: 'Факультет Міжнародних Ринків',
+    color: 'linear-gradient(135deg,#0a1410,#14200e)',
+    result: 'Ти навчишся оцінювати, чи варто відкривати салон за кордоном. Знатимеш, які рішення приймати ще до переїзду та як запускати салон у новій країні на основі даних.',
+    departments: [
+      {
+        name: null,
+        lessons: [
+          'Аналіз попиту і економіки нового ринку',
+          'Аналіз конкурентів на новому ринку',
+          'Позиціонування салону на новому ринку',
+          'Фінмодель і ціноутворення для іншої країни',
+          'Найм і адаптація команди у новій культурі',
+          'Цільова аудиторія на новому ринку',
+          'Маркетинг для нового ринку',
+          'Юридичні реалії нового ринку',
+          'Управління ризиками на новому ринку',
+        ]
+      }
+    ]
+  },
+];
+
+// State
+let currentFaculty = null;
+let currentLessonFlatIdx = 0;
+let flatLessons = []; // flat list of all lessons in current faculty
+// Progress store: key = "fac_id-dept_idx-lesson_idx", value = {done, ytUrl}
+const lessonProgress = JSON.parse(localStorage.getItem('bmba_progress') || '{}');
+
+function saveProgress() {
+  localStorage.setItem('bmba_progress', JSON.stringify(lessonProgress));
+}
+
+function getLessonKey(facId, deptIdx, lsnIdx) {
+  return `${facId}-${deptIdx}-${lsnIdx}`;
+}
+
+function countFacultyDone(fac) {
+  let done = 0, total = 0;
+  fac.departments.forEach((dept, di) => {
+    dept.lessons.forEach((_, li) => {
+      total++;
+      if (lessonProgress[getLessonKey(fac.id, di, li)]?.done) done++;
+    });
+  });
+  return { done, total };
+}
+
+function updateTotalProgress() {
+  let totalDone = 0, totalAll = 0;
+  FACULTIES.forEach(f => {
+    const { done, total } = countFacultyDone(f);
+    totalDone += done; totalAll += total;
+  });
+  const pct = totalAll ? Math.round(totalDone / totalAll * 100) : 0;
+  const el = document.getElementById('total-prog');
+  const txt = document.getElementById('total-prog-txt');
+  if (el) el.style.width = pct + '%';
+  if (txt) txt.textContent = `${totalDone} / ${totalAll}`;
+}
+
+function renderFacultyGrid() {
+  updateTotalProgress();
+  const grid = document.getElementById('faculty-grid');
+  if (!grid) return;
+  grid.innerHTML = FACULTIES.map(f => {
+    const { done, total } = countFacultyDone(f);
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const totalLsn = f.departments.reduce((s, d) => s + d.lessons.length, 0);
+    return `
+    <div class="module-card" onclick="openFaculty(${f.id})">
+      <div class="module-cover" style="background:${f.color};">
+        <span style="font-size:38px;z-index:1;position:relative;">${f.icon}</span>
+        <div style="position:absolute;top:10px;right:12px;font-family:var(--font-display);font-size:32px;font-weight:600;color:rgba(255,255,255,0.06);z-index:0;">${f.num}</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">${f.title}</div>
+        <div class="module-desc" style="font-size:11.5px;">${f.result.substring(0,80)}...</div>
+        <div class="module-meta">
+          <span class="module-count">${totalLsn} лекцій</span>
+          <span style="font-size:11px;color:${done===total&&total>0?'var(--green)':done>0?'var(--gold)':'var(--muted)'};">${done > 0 ? done+'/'+total : '—'}</span>
+        </div>
+        <div class="module-progress-bar"><div class="module-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openFaculty(id) {
+  currentFaculty = FACULTIES.find(f => f.id === id);
+  if (!currentFaculty) return;
+  document.getElementById('faculties-view').style.display = 'none';
+  document.getElementById('lesson-view').style.display = 'none';
+  document.getElementById('faculty-view').style.display = 'block';
+  document.getElementById('fac-icon').textContent = currentFaculty.icon;
+  document.getElementById('fac-title').textContent = currentFaculty.title;
+  document.getElementById('fac-result').textContent = currentFaculty.result;
+  renderDepartments();
+}
+
+function renderDepartments() {
+  const area = document.getElementById('departments-area');
+  if (!area) return;
+  let html = '';
+  currentFaculty.departments.forEach((dept, di) => {
+    if (dept.name) {
+      html += `<div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);padding:14px 0 8px;">${dept.name}</div>`;
+    }
+    html += '<div class="lessons-list" style="margin-bottom:8px;">';
+    dept.lessons.forEach((lsn, li) => {
+      const key = getLessonKey(currentFaculty.id, di, li);
+      const prog = lessonProgress[key] || {};
+      const isDone = prog.done;
+      const hasYt = prog.ytUrl;
+      html += `
+      <div class="lesson-item" onclick="openLesson2(${di},${li})">
+        <div class="lesson-num ${isDone ? 'done' : ''}">${isDone ? '✓' : (di * 100 + li + 1)}</div>
+        <div class="lesson-info">
+          <div class="lesson-item-title">${lsn}</div>
+          <div class="lesson-item-dur" style="display:flex;gap:8px;">
+            ${hasYt ? '<span style="color:var(--rose2);">▶ YouTube</span>' : '<span>Лекція</span>'}
+          </div>
+        </div>
+        ${isDone ? '<div class="done-indicator">✓</div>' : '<div class="lesson-chevron">›</div>'}
+      </div>`;
+    });
+    html += '</div>';
+  });
+  area.innerHTML = html;
+}
+
+function openLesson2(deptIdx, lsnIdx) {
+  if (!currentFaculty) return;
+  // Build flat list for navigation
+  flatLessons = [];
+  currentFaculty.departments.forEach((dept, di) => {
+    dept.lessons.forEach((lsn, li) => {
+      flatLessons.push({ deptIdx: di, lsnIdx: li, title: lsn, deptName: dept.name });
+    });
+  });
+  currentLessonFlatIdx = flatLessons.findIndex(l => l.deptIdx === deptIdx && l.lsnIdx === lsnIdx);
+  showLessonUI(deptIdx, lsnIdx);
+}
+
+function showLessonUI(deptIdx, lsnIdx) {
+  const fac = currentFaculty;
+  const dept = fac.departments[deptIdx];
+  const lsnTitle = dept.lessons[lsnIdx];
+  const key = getLessonKey(fac.id, deptIdx, lsnIdx);
+  const prog = lessonProgress[key] || {};
+
+  document.getElementById('faculty-view').style.display = 'none';
+  document.getElementById('faculties-view').style.display = 'none';
+  document.getElementById('lesson-view').style.display = 'block';
+
+  document.getElementById('lsn-title').textContent = lsnTitle;
+  document.getElementById('lsn-meta').innerHTML = `
+    <span>${fac.icon} ${fac.title}</span>
+    ${dept.name ? '<span>'+dept.name+'</span>' : ''}
+    <span class="tag">Лекція</span>`;
+
+  // YouTube
+  const iframe = document.getElementById('yt-iframe');
+  const placeholder = document.getElementById('yt-placeholder');
+  const input = document.getElementById('yt-input');
+  if (prog.ytUrl) {
+    const vid = extractYTId(prog.ytUrl);
+    if (vid) {
+      iframe.src = `https://www.youtube.com/embed/${vid}?rel=0`;
+      iframe.style.display = 'block';
+      placeholder.style.display = 'none';
+    }
+  } else {
+    iframe.style.display = 'none';
+    iframe.src = '';
+    placeholder.style.display = 'flex';
+    if (input) input.value = '';
+  }
+
+  // Mark done btn
+  const btn = document.getElementById('mark-done-lsn');
+  if (btn) {
+    btn.className = 'mark-done-btn' + (prog.done ? ' done' : '');
+    btn.innerHTML = prog.done ? '✓ Переглянуто' : '○ Відмітити як переглянуте';
+    btn._key = key;
+    btn._deptIdx = deptIdx;
+    btn._lsnIdx = lsnIdx;
+  }
+
+  // Content
+  document.getElementById('lsn-content').innerHTML = `
+    <div class="lesson-section">
+      <h3>🎯 ТЕМА ЛЕКЦІЇ</h3>
+      <p style="color:var(--text);font-size:14px;">${lsnTitle}</p>
+    </div>
+    <div class="lesson-section">
+      <h3>📌 ДОМАШНЄ ЗАВДАННЯ</h3>
+      <ul>
+        <li>Законспектувати ключові думки лекції</li>
+        <li>Застосувати інструмент у своєму салоні</li>
+        <li>Поділитися результатом у чаті потоку</li>
+      </ul>
+    </div>`;
+}
+
+// Current lesson keys for mark done
+function markLessonDone() {
+  const btn = document.getElementById('mark-done-lsn');
+  if (!btn) return;
+  const fl = flatLessons[currentLessonFlatIdx];
+  if (!fl) return;
+  const key = getLessonKey(currentFaculty.id, fl.deptIdx, fl.lsnIdx);
+  if (!lessonProgress[key]) lessonProgress[key] = {};
+  lessonProgress[key].done = true;
+  saveProgress();
+  btn.className = 'mark-done-btn done';
+  btn.innerHTML = '✓ Переглянуто';
+  updateTotalProgress();
+}
+
+function navLesson(dir) {
+  const newIdx = currentLessonFlatIdx + dir;
+  if (newIdx < 0 || newIdx >= flatLessons.length) return;
+  currentLessonFlatIdx = newIdx;
+  const fl = flatLessons[newIdx];
+  showLessonUI(fl.deptIdx, fl.lsnIdx);
+}
+
+function extractYTId(url) {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function loadYT() {
+  const input = document.getElementById('yt-input');
+  const url = input ? input.value.trim() : '';
+  if (!url) return;
+  const vid = extractYTId(url);
+  if (!vid) { alert('Не вдалось розпізнати YouTube-посилання. Спробуйте формат https://youtu.be/ID або https://youtube.com/watch?v=ID'); return; }
+  // Save
+  const fl = flatLessons[currentLessonFlatIdx];
+  if (fl) {
+    const key = getLessonKey(currentFaculty.id, fl.deptIdx, fl.lsnIdx);
+    if (!lessonProgress[key]) lessonProgress[key] = {};
+    lessonProgress[key].ytUrl = url;
+    saveProgress();
+  }
+  const iframe = document.getElementById('yt-iframe');
+  const placeholder = document.getElementById('yt-placeholder');
+  iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
+  iframe.style.display = 'block';
+  placeholder.style.display = 'none';
+}
+
+function backToFaculties() {
+  document.getElementById('faculty-view').style.display = 'none';
+  document.getElementById('lesson-view').style.display = 'none';
+  document.getElementById('faculties-view').style.display = 'block';
+  renderFacultyGrid();
+}
+
+function backToFacultyFromLesson() {
+  document.getElementById('lesson-view').style.display = 'none';
+  document.getElementById('faculties-view').style.display = 'none';
+  document.getElementById('faculty-view').style.display = 'block';
+  renderDepartments();
+}
+
+
+// ===== CALENDAR =====
+let calMonth = 2, calYear = 2026;
+const months = ['Січень','Лютий','Березень','Квітень','Травень','Червень',
+  'Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+
+const events = {
+  '2026-03-22': [{title:'Вебінар: Ціноутворення', type:'webinar'}],
+  '2026-03-26': [{title:'Q&A з Лерою', type:'qa'}],
+  '2026-04-02': [{title:'Воркшоп: Instagram', type:'workshop'}],
+  '2026-04-09': [{title:'Мастермайнд', type:'qa'}],
+};
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent = months[calMonth] + ' ' + calYear;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const start = (firstDay === 0 ? 6 : firstDay - 1);
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+
+  let html = '';
+  for(let i = 0; i < start; i++) {
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${daysInPrev - start + 1 + i}</div></div>`;
+  }
+  for(let d = 1; d <= daysInMonth; d++) {
+    const isToday = (d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear());
+    const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvents = events[key] || [];
+    const evHTML = dayEvents.map(e => `<div class="cal-event ${e.type}" onclick="openEvent('${e.title}')">${e.title}</div>`).join('');
+    html += `<div class="cal-day ${isToday ? 'today' : ''}">
+      <div class="cal-day-num">${d}</div>
+      ${evHTML}
+    </div>`;
+  }
+  const remaining = 42 - start - daysInMonth;
+  for(let i = 1; i <= remaining; i++) {
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
+  }
+  document.getElementById('cal-days').innerHTML = html;
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if(calMonth > 11) { calMonth = 0; calYear++; }
+  if(calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function goToday() {
+  const t = new Date();
+  calMonth = t.getMonth(); calYear = t.getFullYear();
+  renderCalendar();
+}
+
+function setCalView(v, el) {
+  document.querySelectorAll('.cal-view-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('cal-calendar-view').style.display = v === 'calendar' ? 'block' : 'none';
+  document.getElementById('cal-cards-view').style.display = v === 'cards' ? 'block' : 'none';
+  if(v === 'calendar') renderCalendar();
+}
+
+function openEvent(title) {
+  alert(`📅 ${title}\n\nZoom-посилання буде надіслано на пошту за 30 хвилин до початку.\n\nhttps://zoom.us/j/beauty-mba-session`);
+}
+
+// ===== CABINET DATA STRUCTURE =====
+const CABINET_SECTIONS = [
+  {
+    id: 'finances',
+    icon: '💰',
+    title: 'Фінанси',
+    color: 'rgba(122,170,132,0.08)',
+    borderColor: 'rgba(122,170,132,0.2)',
+    metrics: [
+      { id: 'revenue',      label: 'Виручка, грн',           plan: 120000, unit: '₴', type: 'currency' },
+      { id: 'expenses',     label: 'Витрати, грн',            plan: 65000,  unit: '₴', type: 'currency' },
+      { id: 'profit',       label: 'Прибуток, грн',           plan: 55000,  unit: '₴', type: 'currency', computed: true },
+      { id: 'avg_check',    label: 'Середній чек, грн',       plan: 780,    unit: '₴', type: 'currency' },
+      { id: 'breakeven',    label: 'Точка беззбитковості',    plan: 45000,  unit: '₴', type: 'currency' },
+      { id: 'reserve',      label: 'Резервний фонд, грн',     plan: 10000,  unit: '₴', type: 'currency' },
+      { id: 'cash_gap',     label: 'Касовий розрив',          plan: 0,      unit: '₴', type: 'currency' },
+      { id: 'salary_fund',  label: 'Фонд зарплат, грн',      plan: 35000,  unit: '₴', type: 'currency' },
+      { id: 'materials',    label: 'Витрати на матеріали',    plan: 8000,   unit: '₴', type: 'currency' },
+      { id: 'rent',         label: 'Оренда, грн',             plan: 15000,  unit: '₴', type: 'currency' },
+    ]
+  },
+  {
+    id: 'clients',
+    icon: '🌸',
+    title: 'Клієнти',
+    color: 'rgba(201,123,138,0.08)',
+    borderColor: 'rgba(201,123,138,0.2)',
+    metrics: [
+      { id: 'visits_total',  label: 'Кількість візитів',       plan: 168,   unit: '',   type: 'number' },
+      { id: 'clients_new',   label: 'Нових клієнтів',          plan: 20,    unit: '',   type: 'number' },
+      { id: 'clients_ret',   label: 'Повторних клієнтів',      plan: 148,   unit: '',   type: 'number' },
+      { id: 'return_rate',   label: 'Повернення клієнтів, %',  plan: 70,    unit: '%',  type: 'percent' },
+      { id: 'ltv',           label: 'LTV (цінність клієнта)',  plan: 4500,  unit: '₴',  type: 'currency' },
+      { id: 'nps',           label: 'NPS (лояльність 0-10)',   plan: 9,     unit: '',   type: 'number' },
+      { id: 'reactivation',  label: 'Реактивованих клієнтів',  plan: 10,    unit: '',   type: 'number' },
+      { id: 'referrals',     label: 'Прийшли за рекомендацією',plan: 15,    unit: '',   type: 'number' },
+      { id: 'reviews',       label: 'Нових відгуків',          plan: 8,     unit: '',   type: 'number' },
+      { id: 'avg_interval',  label: 'Середній інтервал повтору, дні', plan: 28, unit: 'дні', type: 'number' },
+    ]
+  },
+  {
+    id: 'team',
+    icon: '👥',
+    title: 'Команда',
+    color: 'rgba(212,175,120,0.08)',
+    borderColor: 'rgba(212,175,120,0.2)',
+    metrics: [
+      { id: 'masters_count',  label: 'Кількість майстрів',      plan: 5,    unit: '',   type: 'number' },
+      { id: 'masters_active', label: 'Активних майстрів',       plan: 5,    unit: '',   type: 'number' },
+      { id: 'load_pct',       label: 'Завантаженість, %',       plan: 80,   unit: '%',  type: 'percent' },
+      { id: 'staff_turnover', label: 'Плинність кадрів, %',     plan: 0,    unit: '%',  type: 'percent' },
+      { id: 'kpi_done',       label: 'KPI виконано, %',         plan: 90,   unit: '%',  type: 'percent' },
+      { id: 'training',       label: 'Навчань проведено',        plan: 2,    unit: '',   type: 'number' },
+      { id: 'new_hires',      label: 'Найнято нових майстрів',  plan: 0,    unit: '',   type: 'number' },
+      { id: 'fired',          label: 'Звільнено',               plan: 0,    unit: '',   type: 'number' },
+    ]
+  },
+  {
+    id: 'marketing',
+    icon: '📱',
+    title: 'Маркетинг',
+    color: 'rgba(138,110,180,0.08)',
+    borderColor: 'rgba(138,110,180,0.2)',
+    metrics: [
+      { id: 'ig_followers',   label: 'Instagram підписників',   plan: 5200,  unit: '',  type: 'number' },
+      { id: 'ig_growth',      label: 'Приріст підписників',     plan: 200,   unit: '',  type: 'number' },
+      { id: 'ig_reach',       label: 'Охоплення постів',        plan: 2000,  unit: '',  type: 'number' },
+      { id: 'ig_stories',     label: 'Охоплення сторіс',        plan: 800,   unit: '',  type: 'number' },
+      { id: 'ig_posts',       label: 'Постів опубліковано',     plan: 12,    unit: '',  type: 'number' },
+      { id: 'ads_budget',     label: 'Бюджет реклами, грн',     plan: 5000,  unit: '₴', type: 'currency' },
+      { id: 'ads_leads',      label: 'Лідів з реклами',         plan: 30,    unit: '',  type: 'number' },
+      { id: 'cpl',            label: 'Вартість ліда (CPL), грн',plan: 167,   unit: '₴', type: 'currency' },
+      { id: 'romi',           label: 'ROMI, %',                 plan: 300,   unit: '%', type: 'percent' },
+      { id: 'tg_subs',        label: 'Telegram підписників',    plan: 500,   unit: '',  type: 'number' },
+    ]
+  },
+  {
+    id: 'materials',
+    icon: '🧴',
+    title: 'Матеріали',
+    color: 'rgba(120,160,200,0.08)',
+    borderColor: 'rgba(120,160,200,0.2)',
+    metrics: [
+      { id: 'mat_total',      label: 'Загальні витрати, грн',   plan: 8000,  unit: '₴', type: 'currency' },
+      { id: 'mat_per_visit',  label: 'Матеріали / візит, грн',  plan: 48,    unit: '₴', type: 'currency' },
+      { id: 'mat_pct',        label: '% від виручки',           plan: 7,     unit: '%', type: 'percent' },
+      { id: 'consumables',    label: 'Витратники, грн',         plan: 3000,  unit: '₴', type: 'currency' },
+      { id: 'retail_sold',    label: 'Роздрібний продаж, грн',  plan: 5000,  unit: '₴', type: 'currency' },
+      { id: 'retail_units',   label: 'Одиниць продано',         plan: 20,    unit: '',  type: 'number' },
+    ]
+  },
+  {
+    id: 'reserve',
+    icon: '🏦',
+    title: 'Резервний фонд',
+    color: 'rgba(180,140,80,0.08)',
+    borderColor: 'rgba(180,140,80,0.2)',
+    metrics: [
+      { id: 'res_balance',    label: 'Залишок резерву, грн',    plan: 30000, unit: '₴', type: 'currency' },
+      { id: 'res_income',     label: 'Поповнення цього місяця', plan: 5000,  unit: '₴', type: 'currency' },
+      { id: 'res_expense',    label: 'Витрати з резерву',       plan: 0,     unit: '₴', type: 'currency' },
+      { id: 'res_target',     label: 'Ціль резерву, грн',       plan: 50000, unit: '₴', type: 'currency' },
+      { id: 'res_months',     label: 'Місяців виживання',       plan: 2,     unit: 'міс', type: 'number' },
+    ]
+  },
+];
+
+// Cabinet state
+let cabPeriod = 'month';
+let cabData = JSON.parse(localStorage.getItem('bmba_cabinet') || '{}');
+let cabView = 'dashboard'; // 'dashboard' | 'table' | 'import'
+let expandedSections = {};
+
+function saveCab() {
+  localStorage.setItem('bmba_cabinet', JSON.stringify(cabData));
+}
+
+function getCabKey(sectionId, metricId, period) {
+  const d = new Date();
+  const key = period === 'month'
+    ? `${d.getFullYear()}-${d.getMonth()+1}`
+    : `${d.getFullYear()}-W${getWeekNum(d)}`;
+  return `${sectionId}.${metricId}.${key}`;
+}
+
+function getWeekNum(d) {
+  const onejan = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+}
+
+function getCabValue(sectionId, metricId, field) {
+  const key = getCabKey(sectionId, metricId, cabPeriod);
+  return cabData[key]?.[field] ?? '';
+}
+
+function setCabValue(sectionId, metricId, field, value) {
+  const key = getCabKey(sectionId, metricId, cabPeriod);
+  if (!cabData[key]) cabData[key] = {};
+  cabData[key][field] = value;
+  saveCab();
+  // Update pct display
+  updatePctDisplay(sectionId, metricId);
+}
+
+function updatePctDisplay(sectionId, metricId) {
+  const pctEl = document.getElementById(`pct-${sectionId}-${metricId}`);
+  if (!pctEl) return;
+  const section = CABINET_SECTIONS.find(s => s.id === sectionId);
+  const metric = section?.metrics.find(m => m.id === metricId);
+  if (!metric) return;
+  const plan = parseFloat(getCabValue(sectionId, metricId, 'plan')) || metric.plan;
+  const fact = parseFloat(getCabValue(sectionId, metricId, 'fact'));
+  if (!fact || !plan) { pctEl.textContent = '—'; pctEl.className = 'cab-pct'; return; }
+  const pct = Math.round(fact / plan * 100);
+  pctEl.textContent = pct + '%';
+  pctEl.className = 'cab-pct ' + (pct >= 100 ? 'pct-good' : pct >= 80 ? 'pct-mid' : 'pct-bad');
+}
+
+function renderCabinet() {
+  const container = document.getElementById('cabinet-main');
+  if (!container) return;
+
+  if (cabView === 'dashboard') renderDashboard(container);
+  else if (cabView === 'table') renderTable(container);
+  else if (cabView === 'import') renderImport(container);
+}
+
+function renderDashboard(container) {
+  // Summary KPI cards
+  let summaryHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">';
+  const summaryMetrics = [
+    { sid:'finances', mid:'revenue', label:'Виручка' },
+    { sid:'finances', mid:'profit',  label:'Прибуток' },
+    { sid:'clients',  mid:'return_rate', label:'Повернення' },
+    { sid:'marketing',mid:'romi',   label:'ROMI' },
+  ];
+  summaryMetrics.forEach(sm => {
+    const sec = CABINET_SECTIONS.find(s => s.id === sm.sid);
+    const met = sec?.metrics.find(m => m.id === sm.mid);
+    const fact = getCabValue(sm.sid, sm.mid, 'fact');
+    const plan = parseFloat(getCabValue(sm.sid, sm.mid, 'plan')) || met?.plan;
+    const pct = fact && plan ? Math.round(parseFloat(fact)/plan*100) : null;
+    const unit = met?.unit || '';
+    const displayVal = fact ? formatVal(parseFloat(fact), met?.type, unit) : '—';
+    summaryHtml += `
+    <div class="stat-card" style="cursor:pointer;" onclick="scrollToSection('${sm.sid}')">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${sm.label}</div>
+      <div class="stat-val">${displayVal}</div>
+      ${pct ? `<div class="stat-change" style="color:${pct>=100?'var(--green)':pct>=80?'var(--amber)':'var(--rose)'};">${pct>=100?'↑':pct>=80?'→':'↓'} ${pct}% від плану</div>` : '<div style="font-size:11px;color:var(--muted);">Дані не введено</div>'}
+    </div>`;
+  });
+  summaryHtml += '</div>';
+
+  // Sections accordion
+  let sectionsHtml = '';
+  CABINET_SECTIONS.forEach(section => {
+    const isExpanded = expandedSections[section.id] !== false; // default expanded
+    const completionCount = section.metrics.filter(m => getCabValue(section.id, m.id, 'fact') !== '').length;
+    const totalCount = section.metrics.length;
+    
+    sectionsHtml += `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;" id="section-${section.id}">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;border-left:3px solid ${section.borderColor.replace('0.2','0.8')};" onclick="toggleCabSection('${section.id}')">
+        <span style="font-size:22px;">${section.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;color:var(--cream);">${section.title}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">${completionCount}/${totalCount} показників заповнено</div>
+        </div>
+        <div style="width:80px;height:4px;background:var(--bg3);border-radius:2px;">
+          <div style="height:100%;border-radius:2px;background:${section.borderColor.replace('0.2','0.8')};width:${totalCount?Math.round(completionCount/totalCount*100):0}%;"></div>
+        </div>
+        <span style="color:var(--muted);font-size:14px;margin-left:8px;">${isExpanded?'▲':'▼'}</span>
+      </div>
+      <div id="section-body-${section.id}" style="display:${isExpanded?'block':'none'};">
+        <div style="padding:0 20px 16px;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--border);">Показник</th>
+                <th style="text-align:right;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--border);width:120px;">План</th>
+                <th style="text-align:right;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--border);width:140px;">Факт</th>
+                <th style="text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--border);width:70px;">%</th>
+              </tr>
+            </thead>
+            <tbody>`;
+    
+    section.metrics.forEach(metric => {
+      const planVal = getCabValue(section.id, metric.id, 'plan') || metric.plan;
+      const factVal = getCabValue(section.id, metric.id, 'fact');
+      const pct = factVal && planVal ? Math.round(parseFloat(factVal)/parseFloat(planVal)*100) : null;
+      const pctClass = pct ? (pct>=100?'pct-good':pct>=80?'pct-mid':'pct-bad') : '';
+      
+      sectionsHtml += `
+              <tr style="border-bottom:1px solid rgba(212,175,120,0.04);">
+                <td style="padding:8px 0;font-size:13px;color:var(--muted);">${metric.label}</td>
+                <td style="text-align:right;padding:8px 0;">
+                  <input type="text" value="${planVal}" placeholder="0"
+                    style="background:transparent;border:none;border-bottom:1px dashed rgba(212,175,120,0.2);color:var(--muted);font-family:var(--font-body);font-size:13px;width:100px;text-align:right;outline:none;padding:2px 0;"
+                    oninput="setCabValue('${section.id}','${metric.id}','plan',this.value)">
+                </td>
+                <td style="text-align:right;padding:8px 0;">
+                  <input type="text" value="${factVal}" placeholder="введіть факт"
+                    style="background:transparent;border:none;border-bottom:1px dashed rgba(212,175,120,0.3);color:var(--cream);font-family:var(--font-body);font-size:13px;font-weight:500;width:120px;text-align:right;outline:none;padding:2px 0;"
+                    oninput="setCabValue('${section.id}','${metric.id}','fact',this.value)"
+                    onfocus="this.style.borderBottomColor='var(--gold)'" 
+                    onblur="this.style.borderBottomColor='rgba(212,175,120,0.3)'">
+                </td>
+                <td style="text-align:center;padding:8px 0;">
+                  <span id="pct-${section.id}-${metric.id}" class="cab-pct ${pctClass}">
+                    ${pct ? pct+'%' : '—'}
+                  </span>
+                </td>
+              </tr>`;
+    });
+    
+    sectionsHtml += `
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = summaryHtml + sectionsHtml;
+}
+
+function renderImport(container) {
+  container.innerHTML = `
+  <div style="max-width:600px;">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">📊 Імпорт з Google Sheets</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+        Підв'яжи свою таблицю Google Sheets — дані підтягнуться автоматично. Для цього зроби таблицю публічною (читання) і вставте посилання нижче.
+      </p>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Посилання на Google Sheets</div>
+        <input id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/..." 
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-family:var(--font-body);font-size:13px;width:100%;outline:none;box-sizing:border-box;">
+      </div>
+      <button onclick="importFromSheets()" style="background:var(--gold);border:none;color:var(--bg);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;">
+        Підключити таблицю
+      </button>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">📋 Шаблон для заповнення</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+        Скачай готовий шаблон Google Sheets з усіма потрібними показниками. Заповни — і імпортуй одним кліком.
+      </p>
+      <button onclick="downloadTemplate()" style="background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;">
+        📥 Скачати шаблон
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📤 Ручний імпорт (CSV)</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+        Завантаж CSV-файл з даними. Формат: назва показника, план, факт.
+      </p>
+      <div id="csv-drop" style="border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;"
+        ondragover="event.preventDefault();this.style.borderColor='var(--gold)'"
+        ondragleave="this.style.borderColor='var(--border)'"
+        ondrop="handleCSVDrop(event)">
+        <div style="font-size:24px;margin-bottom:8px;">📂</div>
+        <div style="font-size:13px;color:var(--muted);">Перетягни CSV або <span style="color:var(--gold);cursor:pointer;" onclick="document.getElementById('csv-file').click()">вибери файл</span></div>
+        <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="handleCSVFile(event)">
+      </div>
+      <div id="csv-result" style="margin-top:12px;font-size:13px;color:var(--green);display:none;"></div>
+    </div>
+  </div>`;
+}
+
+function toggleCabSection(id) {
+  expandedSections[id] = expandedSections[id] === false ? true : false;
+  const body = document.getElementById(`section-body-${id}`);
+  if (body) body.style.display = expandedSections[id] === false ? 'none' : 'block';
+  // Update chevron
+  renderCabinet();
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(`section-${id}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function formatVal(num, type, unit) {
+  if (isNaN(num)) return '—';
+  if (type === 'currency') return unit + num.toLocaleString('uk-UA');
+  if (type === 'percent') return num + unit;
+  return num + (unit ? ' ' + unit : '');
+}
+
+function switchCabView(view, el) {
+  cabView = view;
+  document.querySelectorAll('.cab-view-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderCabinet();
+}
+
+function importFromSheets() {
+  const url = document.getElementById('sheets-url')?.value;
+  if (!url) return;
+  alert('✅ Функція підключення Google Sheets буде доступна після інтеграції з Supabase.\n\nПоки що — введіть дані вручну або завантажте CSV.');
+}
+
+function downloadTemplate() {
+  const rows = [['Розділ','Показник','ID','План']];
+  CABINET_SECTIONS.forEach(sec => {
+    sec.metrics.forEach(m => {
+      rows.push([sec.title, m.label, m.id, m.plan]);
+    });
+  });
+  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'beauty-mba-template.csv';
+  a.click();
+}
+
+function handleCSVDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) processCSV(file);
+}
+
+function handleCSVFile(e) {
+  const file = e.target.files[0];
+  if (file) processCSV(file);
+}
+
+function processCSV(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split('\n').slice(1); // skip header
+    let imported = 0;
+    lines.forEach(line => {
+      const cols = line.split(',').map(c => c.replace(/"/g,'').trim());
+      if (cols.length >= 4) {
+        // Try to match by ID
+        CABINET_SECTIONS.forEach(sec => {
+          sec.metrics.forEach(m => {
+            if (m.id === cols[2] || m.label === cols[1]) {
+              const key = getCabKey(sec.id, m.id, cabPeriod);
+              if (!cabData[key]) cabData[key] = {};
+              if (cols[3]) cabData[key]['plan'] = cols[3];
+              if (cols[4]) cabData[key]['fact'] = cols[4];
+              imported++;
+            }
+          });
+        });
+      }
+    });
+    saveCab();
+    const result = document.getElementById('csv-result');
+    if (result) { result.textContent = `✅ Імпортовано ${imported} показників!`; result.style.display = 'block'; }
+    setTimeout(() => { switchCabView('dashboard'); }, 1500);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+
+// Init
+renderCalendar();
+</script>
+</body>
+</html>
